@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
 	"dev": "ts-node-dev src/server.ts",
-	"migrate": "knex migrate:latest --knexfile knexfile.ts migrate:latest"
+	"migrate": "knex --knexfile knexfile.ts migrate:latest",
+	"seed": "knex --knexfile knexfile.ts seed:run"
   },
   "author": "Gabriel Modesto",
   "license": "ISC",
