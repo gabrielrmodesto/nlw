@@ -8,11 +8,13 @@ import {
 	TouchableOpacity,
 	ScrollView,
 	Image,
+	Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { SvgUri } from "react-native-svg";
 import api from "../../services/api";
+import * as Location from "expo-location";
 
 interface Item {
 	id: number;
@@ -24,6 +26,29 @@ const Points = () => {
 	const navigation = useNavigation();
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useState<number[]>([]);
+	const [initialPosition, setInitialPosition] = useState<[number, number]>([
+		0,
+		0,
+	]);
+	useEffect(() => {
+		async function loadPosition() {
+			const { status } = await Location.requestPermissionsAsync();
+
+			if (status !== "granted") {
+				Alert.alert(
+					"Ooops...",
+					"Precisamos de sua permissao para obter a localizacao"
+				);
+				return;
+			}
+
+			const location = await Location.getCurrentPositionAsync();
+			const { latitude, longitude } = location.coords;
+
+			setInitialPosition([latitude, longitude]);
+		}
+		loadPosition();
+	}, []);
 
 	useEffect(() => {
 		api.get("items").then((response) => setItems(response.data));
@@ -59,37 +84,39 @@ const Points = () => {
 					Encontre no mapa um ponto de coleta.
 				</Text>
 				<View style={styles.mapContainer}>
-					<MapView
-						style={styles.map}
-						initialRegion={{
-							latitude: -22.5797335,
-							longitude: -44.972014,
-							latitudeDelta: 0.014,
-							longitudeDelta: 0.014,
-						}}
-					>
-						<Marker
-							onPress={handleNavigateToDetail}
-							style={styles.mapMarker}
-							coordinate={{
-								latitude: -22.5797335,
-								longitude: -44.972014,
+					{initialPosition[0] !== 0 && (
+						<MapView
+							style={styles.map}
+							initialRegion={{
+								latitude: initialPosition[0],
+								longitude: initialPosition[1],
+								latitudeDelta: 0.014,
+								longitudeDelta: 0.014,
 							}}
 						>
-							<View style={styles.mapMarkerContainer}>
-								<Image
-									style={styles.mapMarkerImage}
-									source={{
-										uri:
-											"https://www.mercadoeconsumo.com.br/wp-content/uploads/2018/07/Carrefour-inaugura-unidade-Market-na-Praia-Grande.jpg",
-									}}
-								/>
-								<Text style={styles.mapMarkerTitle}>
-									Mercado
-								</Text>
-							</View>
-						</Marker>
-					</MapView>
+							<Marker
+								onPress={handleNavigateToDetail}
+								style={styles.mapMarker}
+								coordinate={{
+									latitude: initialPosition[0],
+									longitude: initialPosition[1],
+								}}
+							>
+								<View style={styles.mapMarkerContainer}>
+									<Image
+										style={styles.mapMarkerImage}
+										source={{
+											uri:
+												"https://www.mercadoeconsumo.com.br/wp-content/uploads/2018/07/Carrefour-inaugura-unidade-Market-na-Praia-Grande.jpg",
+										}}
+									/>
+									<Text style={styles.mapMarkerTitle}>
+										Mercado
+									</Text>
+								</View>
+							</Marker>
+						</MapView>
+					)}
 				</View>
 			</View>
 			<View style={styles.itemsContainer}>
