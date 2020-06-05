@@ -86,22 +86,6 @@ const Home = () => {
 					</View>
 				</View>
 				<View style={styles.footer}>
-					{/* <TextInput
-						style={styles.input}
-						placeholder="Digite a UF"
-						value={uf}
-						autoCapitalize="characters"
-						autoCorrect={false}
-						maxLength={2}
-						onChangeText={setUf}
-					/>
-					<TextInput
-						style={styles.input}
-						placeholder="Digite a Cidade"
-						onChangeText={setCity}
-						value={city}
-						autoCorrect={false}
-					/> */}
 					<Picker
 						selectedValue={selectedUF}
 						style={styles.input}

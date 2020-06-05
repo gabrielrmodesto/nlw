@@ -6,13 +6,13 @@ import {
 	StyleSheet,
 	Image,
 	SafeAreaView,
-	Linking
+	Linking,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather as Icon, FontAwesome } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
 import api from "../../services/api";
-import * as MailComposer from 'expo-mail-composer';
+import * as MailComposer from "expo-mail-composer";
 
 interface Params {
 	point_id: number;
@@ -20,6 +20,7 @@ interface Params {
 interface Data {
 	point: {
 		image: string;
+		image_url: string;
 		name: string;
 		whatsapp: string;
 		email: string;
@@ -46,14 +47,16 @@ const Detail = () => {
 	function handleNavigateBack() {
 		navigation.goBack();
 	}
-	function handleMailCompose(){
+	function handleMailCompose() {
 		MailComposer.composeAsync({
-			subject: 'Interesse em coleta de residuos',
-			recipients: [data.point.email]
-		})
+			subject: "Interesse em coleta de residuos",
+			recipients: [data.point.email],
+		});
 	}
-	function handleWhatsapp(){
-		Linking.openURL(`whatsapp://send?phone=${data.point.whatsapp}&text=Tenho interesse sobre a coleta de residuos`);
+	function handleWhatsapp() {
+		Linking.openURL(
+			`whatsapp://send?phone=${data.point.whatsapp}&text=Tenho interesse sobre a coleta de residuos`
+		);
 	}
 
 	if (!data.point) {
@@ -68,7 +71,7 @@ const Detail = () => {
 				<Image
 					style={styles.pointImage}
 					source={{
-						uri: data.point.image,
+						uri: data.point.image_url,
 					}}
 				/>
 				<Text style={styles.pointImage}>{data.point.name}</Text>
