@@ -57,22 +57,25 @@ export default class PointsController {
 			longitude,
 			city,
 			uf,
-		}
+		};
 		const insertedId = await trx("points").insert(points);
 
 		const points_id = insertedId[0];
 
-		const pointsItems = items.map((items_id: number) => {
-			return {
-				items_id,
-				points_id,
-			};
-		});
+		const pointsItems = items
+			.split(",")
+			.map((item: string) => Number(item.trim()))
+			.map((items_id: number) => {
+				return {
+					items_id,
+					points_id,
+				};
+			});
 
 		await trx("points_items").insert(pointsItems);
 
 		await trx.commit();
 
-		return response.json({id: points_id, ...points});
+		return response.json({ id: points_id, ...points });
 	}
 }
