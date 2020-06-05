@@ -43,6 +43,7 @@ const CreatePoint = () => {
 		email: "",
 		whatsapp: "",
 	});
+	const [selectedFile, setSelectedFile] = useState<File>();
 	const history = useHistory();
 
 	useEffect(() => {
@@ -146,7 +147,7 @@ const CreatePoint = () => {
 					Cadastro do
 					<br /> ponto de coleta
 				</h1>
-				<Dropzone />
+				<Dropzone onFileUploaded={setSelectedFile} />
 				<fieldset>
 					<legend>
 						<h2>Dados</h2>
